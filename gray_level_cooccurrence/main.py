@@ -75,7 +75,7 @@ def calculate_performance_value(cooccurrence_matrix: np.ndarray, func_str: str) 
     print('{}: {:.4f}'.format(func_str, value))
 
 
-matrix = np.array([[2, 1, 1, 2], [3, 0, 3, 1], [2, 3, 0, 1], [0, 2, 2, 1]])
+matrix = np.array([[0, 0, 0, 3, 2], [0, 0, 1, 2, 2], [0, 0, 0, 0, 0], [1, 4, 0, 0, 0], [4, 1, 0, 0, 0]])
 
 print(matrix)
 
