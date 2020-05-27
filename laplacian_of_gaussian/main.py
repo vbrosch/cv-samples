@@ -1,8 +1,10 @@
 import math
+import sys
 from pprint import pprint
 
 import numpy as np
-from sklearn.preprocessing import normalize
+import cv2 as cv
+from scipy.signal import convolve2d
 
 
 def _l_o_g_entry(x: float, y: float, sigma: float) -> float:
@@ -17,7 +19,7 @@ def _l_o_g_entry(x: float, y: float, sigma: float) -> float:
 
 def main():
     k = 7
-    sigma = 1.6
+    sigma = 1.5
     x_mat = np.zeros((k, k))
     highest_val = 255
 
@@ -47,6 +49,18 @@ def main():
 
     print('Round:')
     pprint(rounded)
+
+    img = cv.imread(sys.argv[1], cv.IMREAD_GRAYSCALE)
+    img_log = convolve2d(img, rounded)
+
+    img_log = np.clip(img_log, 0, 255).astype(np.uint8)
+
+    cv.namedWindow('LOG', cv.WINDOW_NORMAL)
+    cv.imshow('LOG', img_log)
+
+    cv.resizeWindow('LOG', 1000, 1000)
+    cv.waitKey(0)
+    cv.destroyAllWindows()
 
 
 if __name__ == '__main__':
