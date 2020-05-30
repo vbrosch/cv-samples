@@ -27,7 +27,7 @@ def _relative_histogram(absolute_hist: List[int]) -> List[float]:
     factor = sum(absolute_hist)
     rel_hist = [1 / factor * bin for bin in absolute_hist]
 
-    assert sum(rel_hist) == 1
+    assert abs(sum(rel_hist) - 1) < 1e-6
 
     return rel_hist
 

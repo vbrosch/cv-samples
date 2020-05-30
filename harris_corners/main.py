@@ -12,17 +12,17 @@ ALPHA = 0.1
 THRESHOLD = 120
 
 
-def _show_image_and_wait_for_key(img: np.ndarray, title: str) -> None:
+def show_image_and_wait_for_key(img: np.ndarray, title: str) -> None:
     cv.imshow('{} – Please press a key to continue'.format(title), img)
     cv.waitKey(0)
     cv.destroyAllWindows()
 
 
-def _to_grayscale(img: np.ndarray) -> np.ndarray:
+def to_grayscale(img: np.ndarray) -> np.ndarray:
     return cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 
 
-def _blur(img: np.ndarray) -> np.ndarray:
+def blur(img: np.ndarray) -> np.ndarray:
     return cv.blur(img, (6, 6))
 
 
@@ -69,9 +69,9 @@ def _get_second_moment_matrix(dx_x: np.ndarray, dx_y: np.ndarray, dx_xy: np.ndar
     second_moment_matrix_y = _get_second_moment_matrix_for_derivative(dx_y, w)
     second_moment_matrix_xy = _get_second_moment_matrix_for_derivative(dx_xy, w)
 
-    _show_image_and_wait_for_key(second_moment_matrix_x, 'second_moment_matrix_x')
-    _show_image_and_wait_for_key(second_moment_matrix_y, 'second_moment_matrix_y')
-    _show_image_and_wait_for_key(second_moment_matrix_xy, 'second_moment_matrix_xy')
+    show_image_and_wait_for_key(second_moment_matrix_x, 'second_moment_matrix_x')
+    show_image_and_wait_for_key(second_moment_matrix_y, 'second_moment_matrix_y')
+    show_image_and_wait_for_key(second_moment_matrix_xy, 'second_moment_matrix_xy')
 
     img_shape = dx_x.shape
 
@@ -136,7 +136,7 @@ def _eliminate_non_maxima_points(response_matrix: np.ndarray) -> np.ndarray:
     return response_matrix_new
 
 
-def main():
+def get_image() -> np.ndarray:
     img_p = sys.argv[1]
 
     if img_p is None or img_p == '':
@@ -147,34 +147,40 @@ def main():
     if img is None:
         raise Exception('Image could not be loaded.')
 
-    img_grayscale = _to_grayscale(img)
-    img_grayscale = _blur(img_grayscale)
+    return img
 
-    _show_image_and_wait_for_key(img_grayscale, 'Grayscale')
+
+def main():
+    img = get_image()
+
+    img_grayscale = to_grayscale(img)
+    img_grayscale = blur(img_grayscale)
+
+    show_image_and_wait_for_key(img_grayscale, 'Grayscale')
 
     dx_x, dx_y, dx_xy = _get_derivatives(img_grayscale)
 
     dx_x_squared = dx_x * dx_x
     dx_y_squared = dx_y * dx_y
 
-    _show_image_and_wait_for_key(dx_x, 'dx_x')
-    _show_image_and_wait_for_key(dx_x_squared, 'dx_x_squared')
-    _show_image_and_wait_for_key(dx_y, 'dx_y')
-    _show_image_and_wait_for_key(dx_y_squared, 'dx_y')
-    _show_image_and_wait_for_key(dx_xy, 'dx_xy')
+    show_image_and_wait_for_key(dx_x, 'dx_x')
+    show_image_and_wait_for_key(dx_x_squared, 'dx_x_squared')
+    show_image_and_wait_for_key(dx_y, 'dx_y')
+    show_image_and_wait_for_key(dx_y_squared, 'dx_y')
+    show_image_and_wait_for_key(dx_xy, 'dx_xy')
 
     window_fn = _get_window_function()
     second_moment_matrix = _get_second_moment_matrix(dx_x_squared, dx_y_squared, dx_xy, window_fn)
     response_matrix = _get_response_matrix(second_moment_matrix, img_grayscale.shape)
 
-    _show_image_and_wait_for_key(response_matrix, 'Response Matrix')
+    show_image_and_wait_for_key(response_matrix, 'Response Matrix')
 
     response_matrix = _apply_threshold(response_matrix, THRESHOLD)
 
-    _show_image_and_wait_for_key(response_matrix, 'Response Matrix (Thresholded)')
+    show_image_and_wait_for_key(response_matrix, 'Response Matrix (Thresholded)')
 
     response_matrix = _eliminate_non_maxima_points(response_matrix)
-    _show_image_and_wait_for_key(response_matrix, 'Response Matrix (Eliminated Non Maximum Points)')
+    show_image_and_wait_for_key(response_matrix, 'Response Matrix (Eliminated Non Maximum Points)')
 
 
 if __name__ == '__main__':
